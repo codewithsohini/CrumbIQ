@@ -1,18 +1,17 @@
 import os
 import sys
 from pathlib import Path
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
 import joblib
-
+from flask import Flask, render_template
 BASE_DIR = Path(__file__).parent
-ASSETS_DIR = BASE_DIR.parent / "attached_assets"
+ASSETS_DIR = BASE_DIR
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 CORS(app)
-
 model = None
 scaler = None
 feature_columns = None
@@ -20,15 +19,15 @@ feature_columns = None
 def load_models():
     global model, scaler, feature_columns
     try:
-        model = joblib.load(str(ASSETS_DIR / "food_waste_model_1780062567161.pkl"))
-        scaler = joblib.load(str(ASSETS_DIR / "scaler_1780062567164.pkl"))
-        feature_columns = joblib.load(str(ASSETS_DIR / "features_1780062567159.pkl"))
+        model = joblib.load(str(ASSETS_DIR / "food_waste_model.pkl"))
+        scaler = joblib.load(str(ASSETS_DIR / "scaler.pkl"))
+        feature_columns = joblib.load(str(ASSETS_DIR / "features.pkl"))
         print(f"[CrumbIQ] Models loaded successfully.", flush=True)
         print(f"[CrumbIQ] Feature columns: {list(feature_columns)}", flush=True)
     except Exception as e:
         print(f"[CrumbIQ] ERROR loading models: {e}", flush=True)
         sys.exit(1)
-
+load_models()
 SECTION_MAP = {
     "Section A": "A",
     "Section B": "B",
@@ -200,6 +199,6 @@ def health():
 
 
 if __name__ == "__main__":
-    load_models()
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
+se)
