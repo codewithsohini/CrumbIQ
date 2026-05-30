@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrumbIQ — AI-Powered Campus Food Waste Analytics & Prediction</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="CrumbIQ is an eco-futurist AI platform predicting and analyzing campus food waste in real-time. Join the green revolution for smarter, sustainable campus dining.">
+    <meta name="keywords" content="food waste, campus sustainability, AI prediction, climate tech, green analytics, food preservation">
+    <meta name="author" content="CrumbIQ Team">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS Styling -->
+    <style>
+        /* CSS Reset & Variables */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Strict Green Palette - NO WHITE */
+            --bg-base: #D8EAD3;
+            --bg-alt-1: #C9E0C3;
+            --bg-alt-2: #BFDBBA;
+            --primary-green: #588157;
+            --accent-green: #7BAE7F;
+            --light-sage: #A3B18A;
+            --text-dark: #1C2B1E;
+            --text-light: #E8F5E5;
+            --card-glass: rgba(200, 230, 195, 0.45);
+            --card-glass-hover: rgba(188, 222, 182, 0.6);
+            --card-border: rgba(88, 129, 87, 0.25);
+            --footer-bg: #3A5A40;
+            
+            /* Typography */
+            --font-headings: 'Playfair Display', Georgia, serif;
+            --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+            
+            /* Durations */
+            --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-tilt: 0.15s ease-out;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            color: var(--text-dark);
+            font-family: var(--font-body);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-alt-1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 5px;
+            border: 2px solid var(--bg-alt-1);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #466745;
+        }
+
+        /* -------------------------------------------------------------
+           Background Mesh Gradient Blobs
+           ------------------------------------------------------------- */
+        .blob-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.65;
+            mix-blend-mode: multiply;
+            animation: float-blob 25s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            width: 50vw;
+            height: 50vw;
+            background: #B5D4AE;
+            top: -10%;
+            left: -10%;
+            animation-duration: 22s;
+        }
+
+        .blob-2 {
+            width: 55vw;
+            height: 55vw;
+            background: #88BB8A;
+            bottom: -15%;
+            right: -10%;
+            animation-duration: 30s;
+            animation-delay: -7s;
+        }
+
+        .blob-3 {
+            width: 45vw;
+            height: 45vw;
+            background: #D4EBCF;
+            top: 35%;
+            left: 45%;
+            animation-duration: 26s;
+            animation-delay: -13s;
+        }
+
+        @keyframes float-blob {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+            33% {
+                transform: translate(4vw, 6vh) scale(1.1) rotate(120deg);
+            }
+            66% {
+                transform: translate(-3vw, 3vh) scale(0.95) rotate(240deg);
+            }
+            100% {
+                transform: translate(0, 0) scale(1) rotate(360deg);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           Common Typography & Layout Elements
+           ------------------------------------------------------------- */
+        h1, h2, h3, h4 {
+            font-family: var(--font-headings);
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: clamp(1rem, 1.2vw, 1.15rem);
+            font-family: var(--font-body);
+        }
+
+        section {
+            padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 5vw, 6rem);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .section-desc {
+            max-width: 650px;
+            margin: -0.5rem auto 3.5rem;
+            text-align: center;
+            opacity: 0.85;
+        }
+
+        /* Container helper */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Glassmorphism utility card */
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(58, 90, 64, 0.08);
+            transition: var(--transition-smooth);
+            transform-style: preserve-3d;
+        }
+
+        .glass-card:hover {
+            background: var(--card-glass-hover);
+            border-color: rgba(88, 129, 87, 0.4);
+            box-shadow: 0 20px 40px rgba(58, 90, 64, 0.15);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-body);
+            font-weight: 600;
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-green);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background: #466745;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(88, 129, 87, 0.25);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--primary-green);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(88, 129, 87, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* -------------------------------------------------------------
+           GSAP-style Scroll Reveal Class
+           ------------------------------------------------------------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger helpers */
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+
+        /* -------------------------------------------------------------
+           1. Navbar
+           ------------------------------------------------------------- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(180, 220, 175, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(88, 129, 87, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            z-index: 100;
+            transition: var(--transition-smooth);
+        }
+
+        .navbar.scrolled {
+            height: 70px;
+            background: rgba(160, 205, 155, 0.85);
+            box-shadow: 0 4px 20px rgba(58, 90, 64, 0.08);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: var(--font-headings);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .nav-logo i {
+            color: var(--primary-green);
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-green);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* -------------------------------------------------------------
+           2. Hero Section
+           ------------------------------------------------------------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--bg-base);
+            padding-top: 100px;
+            position: relative;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 4rem;
+            width: 100%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title span {
+            color: var(--primary-green);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 480px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        #three-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #three-canvas:active {
+            cursor: grabbing;
+        }
+
+        /* -------------------------------------------------------------
+           3. Problem Statement
+           ------------------------------------------------------------- */
+        .ops-section {
+            background-color: var(--bg-alt-2);
+        }
+
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.2rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(88, 129, 87, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--primary-green);
+            margin-bottom: 1.2rem;
+        }
+
+        .stat-number {
+            font-family: var(--font-headings);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 0.6rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            max-width: 240px;
+        }
+
+        /* -------------------------------------------------------------
+           4. How It Works
+           ------------------------------------------------------------- */
+        .how-section {
+            background-color: var(--bg-alt-1);
+        }
+
+        .flow-container {
+            position: relative;
+            margin-top: 3rem;
+        }
+
+        .flow-svg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            transform: translateY(-50%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .flow-line {
+            fill: none;
+            stroke: var(--primary-green);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 10, 10;
+            animation: dash 30s linear infinite;
+            opacity: 0.35;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -1000;
+            }
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-card {
+            padding: 3rem 2rem 2.5rem;
+            position: relative;
+        }
+
+        .step-badge {
+            position: absolute;
+            top: -20px;
+            left: 2rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(88, 129, 87, 0.2);
+        }
+
+        .step-icon {
+            font-size: 2.2rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-desc {
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        /* -------------------------------------------------------------
+           5. Dashboard Preview
+           ------------------------------------------------------------- */
+        .dashboard-section {
+            background-color: var(--bg-base);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-main-card {
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-side-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .chart-sub-card {
+            flex: 1;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-family: var(--font-headings);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chart-title span {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            background: rgba(88, 129, 87, 0.12);
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        .dashboard-row-bottom {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .kpi-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.8rem;
+        }
+
+        .kpi-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            background: rgba(88, 129, 87, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-green);
+        }
+
+        .kpi-val {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.1;
+        }
+
+        .kpi-lbl {
+            font-size: 0.85rem;
+            opacity: 0.75;
+        }
+
+        .streamlit-sandbox-card {
+            margin-top: 2.5rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2.5rem;
+            border: 1px solid rgba(123, 174, 127, 0.35);
+            background: rgba(123, 174, 127, 0.1);
+        }
+        
+        .streamlit-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .streamlit-sandbox-card {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                gap: 1.5rem;
+                padding: 2rem 1.5rem;
+            }
+            .streamlit-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+
+        /* -------------------------------------------------------------
+           6. Prediction Interface
+           ------------------------------------------------------------- */
+        .predict-section {
+            background-color: var(--bg-alt-2);
+        }
+
+        .predict-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            align-items: stretch;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            background: rgba(200, 230, 195, 0.3);
+            color: var(--text-dark);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition-smooth);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-control:focus {
+            background: rgba(200, 230, 195, 0.6);
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(88, 129, 87, 0.15);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dark);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Range Slider Styling */
+        .range-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .range-slider {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(88, 129, 87, 0.2);
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 6px rgba(58, 90, 64, 0.3);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .slider-val {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .predict-result-wrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-card-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 2rem;
+            min-height: 380px;
+            justify-content: center;
+            border: 2px dashed rgba(88, 129, 87, 0.3);
+            border-radius: 20px;
+            background: rgba(200, 230, 195, 0.25);
+            transition: var(--transition-smooth);
+        }
+
+        .result-card-inner.calculated {
+            border: 1px solid var(--card-border);
+            background: var(--card-glass);
+        }
+
+        .result-placeholder-icon {
+            font-size: 4rem;
+            color: var(--primary-green);
+            opacity: 0.35;
+            margin-bottom: 1.5rem;
+            animation: pulse-slow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.25; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.05); }
+        }
+
+        .result-val {
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-family: var(--font-headings);
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .impact-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            margin-top: 1rem;
+        }
+
+        .impact-low {
+            background: rgba(88, 129, 87, 0.18);
+            color: #386641;
+            border: 1px solid rgba(88, 129, 87, 0.3);
+        }
+
+        .impact-medium {
+            background: rgba(224, 169, 109, 0.2);
+            color: #a05c1b;
+            border: 1px solid rgba(224, 169, 109, 0.4);
+        }
+
+        .impact-high {
+            background: rgba(188, 108, 37, 0.2);
+            color: #8f4000;
+            border: 1px solid rgba(188, 108, 37, 0.4);
+        }
+
+        .result-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(88, 129, 87, 0.15);
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-title {
+            font-size: 0.85rem;
+            opacity: 0.75;
+            margin-bottom: 0.4rem;
+        }
+
+        .metric-val {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* -------------------------------------------------------------
+           7. AI Recommendation Engine
+           ------------------------------------------------------------- */
+        .insights-section {
+            background-color: var(--bg-alt-1);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .insight-card {
+            border-left: 6px solid var(--primary-green);
+            padding: 2.5rem 2rem;
+            position: relative;
+        }
+
+        .insight-card.priority-high {
+            border-left-color: #8f4000;
+        }
+
+        .insight-card.priority-medium {
+            border-left-color: #a05c1b;
+        }
+
+        .insight-card.priority-low {
+            border-left-color: var(--primary-green);
+        }
+
+        .insight-card .insight-icon {
+            font-size: 2.2rem;
+            color: var(--primary-green);
+            margin-bottom: 1.2rem;
+        }
+
+        .insight-card.priority-high .insight-icon {
+            color: #8f4000;
+        }
+
+        .insight-card.priority-medium .insight-icon {
+            color: #a05c1b;
+        }
+
+        .insight-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.3;
+        }
+
+        .insight-card p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .priority-badge.high {
+            background: rgba(188, 108, 37, 0.15);
+            color: #8f4000;
+            border: 1px solid rgba(188, 108, 37, 0.3);
+        }
+
+        .priority-badge.medium {
+            background: rgba(224, 169, 109, 0.15);
+            color: #a05c1b;
+            border: 1px solid rgba(224, 169, 109, 0.3);
+        }
+
+        .priority-badge.low {
+            background: rgba(88, 129, 87, 0.15);
+            color: #386641;
+            border: 1px solid rgba(88, 129, 87, 0.25);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #8f4000;
+            border-radius: 50%;
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            box-shadow: 0 0 0 0 rgba(143, 64, 0, 0.7);
+            animation: pulse-red 2s infinite;
+        }
+
+        .insight-card.priority-medium .pulse-dot {
+            background-color: #a05c1b;
+            box-shadow: 0 0 0 0 rgba(160, 92, 27, 0.7);
+            animation: pulse-orange 2s infinite;
+        }
+
+        .insight-card.priority-low .pulse-dot {
+            background-color: var(--primary-green);
+            box-shadow: 0 0 0 0 rgba(88, 129, 87, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(143, 64, 0, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(143, 64, 0, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(143, 64, 0, 0); }
+        }
+
+        @keyframes pulse-orange {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(160, 92, 27, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(160, 92, 27, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(160, 92, 27, 0); }
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(88, 129, 87, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(88, 129, 87, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(88, 129, 87, 0); }
+        }
+
+        /* -------------------------------------------------------------
+           8. Financial Impact & Savings Section
+           ------------------------------------------------------------- */
+        .financial-section {
+            background-color: var(--bg-alt-2);
+        }
+
+        .financial-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        /* -------------------------------------------------------------
+           9. Sustainability Impact Section
+           ------------------------------------------------------------- */
+        .impact-section {
+            background-color: var(--bg-alt-1);
+            position: relative;
+        }
+
+        /* Soft Animated Green Mesh Background specific for Impact */
+        .impact-mesh {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+            background: radial-gradient(circle at 20% 30%, var(--primary-green) 0%, transparent 40%),
+                        radial-gradient(circle at 85% 70%, var(--accent-green) 0%, transparent 45%);
+            pointer-events: none;
+        }
+
+        .quote-container {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .quote-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            opacity: 0.35;
+            margin-bottom: 1rem;
+        }
+
+        .pull-quote {
+            font-family: var(--font-headings);
+            font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+            font-style: italic;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-author {
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.75;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .impact-card-stat {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .impact-val {
+            font-family: var(--font-headings);
+            font-size: clamp(2.5rem, 4.5vw, 3.8rem);
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 0.6rem;
+            line-height: 1;
+        }
+
+        .impact-lbl {
+            font-weight: 600;
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        /* -------------------------------------------------------------
+           9. Footer
+           ------------------------------------------------------------- */
+        .footer {
+            background-color: var(--footer-bg);
+            color: var(--light-sage);
+            padding: 5rem 5vw 3rem;
+            position: relative;
+            z-index: 5;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1fr;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+        }
+
+        .footer-brand h3 {
+            color: var(--text-light);
+            font-family: var(--font-headings);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-brand h3 i {
+            color: var(--accent-green);
+        }
+
+        .footer-brand p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            opacity: 0.85;
+            max-width: 320px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(163, 177, 138, 0.15);
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-socials a:hover {
+            background: var(--accent-green);
+            color: var(--footer-bg);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h4 {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 2px;
+            background: var(--accent-green);
+        }
+
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links ul a {
+            color: var(--light-sage);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .footer-links ul a:hover {
+            color: var(--text-light);
+            padding-left: 3px;
+        }
+
+        .footer-newsletter h4 {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-newsletter h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 35px;
+            height: 2px;
+            background: var(--accent-green);
+        }
+
+        .footer-newsletter p {
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            opacity: 0.85;
+        }
+
+        .newsletter-form {
+            display: flex;
+            position: relative;
+        }
+
+        .newsletter-input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(163, 177, 138, 0.3);
+            background: rgba(163, 177, 138, 0.1);
+            color: var(--text-light);
+            outline: none;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+        }
+
+        .newsletter-input:focus {
+            border-color: var(--accent-green);
+        }
+
+        .newsletter-submit {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            bottom: 4px;
+            border: none;
+            background: var(--accent-green);
+            color: var(--footer-bg);
+            padding: 0 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .newsletter-submit:hover {
+            background: #90c294;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 4rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(163, 177, 138, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-tagline {
+            font-style: italic;
+            font-family: var(--font-headings);
+            font-size: 1rem;
+            color: var(--accent-green);
+        }
+
+        /* -------------------------------------------------------------
+           📱 Responsive Design (Media Queries)
+           ------------------------------------------------------------- */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-subtitle {
+                margin: 0 auto 2.5rem;
+            }
+
+            .hero-visual {
+                height: 380px;
+            }
+
+            .ops-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .ops-grid > *:nth-child(4), .ops-grid > *:nth-child(5) {
+                grid-column: span 1.5;
+            }
+            .financial-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-main-card {
+                height: 350px;
+            }
+
+            .dashboard-row-bottom {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .predict-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .insights-grid > *:last-child {
+                grid-column: span 2;
+                max-width: 500px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .impact-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .flow-line {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .navbar {
+                padding: 0 1.5rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: rgba(160, 205, 155, 0.98);
+                backdrop-filter: blur(16px);
+                border-bottom: 1px solid rgba(88, 129, 87, 0.2);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                transition: transform 0.4s ease;
+                z-index: 99;
+                pointer-events: none;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-actions {
+                display: none;
+            }
+
+            .ops-grid, .financial-grid {
+                grid-template-columns: 1fr;
+            }
+            .ops-grid > *, .financial-grid > * {
+                grid-column: span 1 !important;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 3.5rem;
+            }
+
+            .step-card {
+                padding: 2.5rem 1.5rem 2rem;
+            }
+
+            .dashboard-row-bottom {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-grid > *:last-child {
+                grid-column: span 1;
+            }
+
+            .impact-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+        }
+
+        /* Accessibilities & Preferences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-delay: 0s !important;
+                animation-duration: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0s !important;
+                scroll-behavior: auto !important;
+            }
+            .blob { animation: none; }
+            .flow-line { animation: none; }
+        }
+
+        /* ---------------------------------------------------------------
+           TODAY'S CAFETERIA BRIEF
+           --------------------------------------------------------------- */
+        .brief-section { background-color: var(--bg-alt-2); }
+
+        .brief-header-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .live-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(88, 129, 87, 0.12);
+            border: 1px solid rgba(88, 129, 87, 0.3);
+            padding: 0.3rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.7rem;
+        }
+
+        .live-chip .chip-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--primary-green);
+            animation: pulse-green 2s infinite;
+            display: inline-block;
+        }
+
+        .brief-date-display {
+            font-size: 0.9rem;
+            opacity: 0.55;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .brief-metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .brief-metric-card {
+            padding: 1.6rem 1.2rem;
+            text-align: center;
+        }
+
+        .brief-metric-icon {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            background: rgba(88, 129, 87, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary-green);
+            margin: 0 auto 0.9rem;
+        }
+
+        .brief-metric-val {
+            font-family: var(--font-headings);
+            font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+            font-weight: 800;
+            color: var(--primary-green);
+            line-height: 1.1;
+            margin-bottom: 0.35rem;
+        }
+
+        .brief-metric-label {
+            font-size: 0.82rem;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+
+        .brief-directive-card {
+            background: linear-gradient(135deg, rgba(88, 129, 87, 0.1), rgba(123, 174, 127, 0.06));
+            border: 1px solid rgba(88, 129, 87, 0.22);
+            border-radius: 18px;
+            padding: 1.8rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .directive-icon {
+            width: 50px; height: 50px;
+            border-radius: 13px;
+            background: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+
+        .directive-chip {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary-green);
+            margin-bottom: 0.45rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .directive-text {
+            font-size: clamp(1rem, 1.4vw, 1.1rem);
+            font-weight: 600;
+            line-height: 1.55;
+            color: var(--text-dark);
+        }
+
+        .directive-sub {
+            font-size: 0.88rem;
+            opacity: 0.65;
+            margin-top: 0.4rem;
+            font-style: italic;
+        }
+
+        .brief-bottom-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        .brief-bottom-card {
+            padding: 1.4rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .brief-bottom-icon {
+            font-size: 1.4rem;
+            color: var(--primary-green);
+            flex-shrink: 0;
+        }
+
+        .brief-bottom-label {
+            font-size: 0.78rem;
+            opacity: 0.65;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .brief-bottom-val {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* ---------------------------------------------------------------
+           RUSH HOUR INTELLIGENCE
+           --------------------------------------------------------------- */
+        .rush-section { background-color: var(--bg-alt-1); }
+
+        .rush-timeline {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.6rem;
+            align-items: end;
+            padding: 1rem 0;
+        }
+
+        .rush-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rush-bar-wrap {
+            height: 150px;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .rush-bar {
+            width: 85%;
+            max-width: 56px;
+            border-radius: 7px 7px 0 0;
+            transition: height 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+            min-height: 8px;
+        }
+
+        .rush-bar.bar-closed { background: rgba(88, 129, 87, 0.1); }
+        .rush-bar.bar-low    { background: linear-gradient(180deg, rgba(88,129,87,0.55), rgba(88,129,87,0.25)); }
+        .rush-bar.bar-medium { background: linear-gradient(180deg, rgba(224,169,109,0.75), rgba(224,169,109,0.35)); }
+        .rush-bar.bar-peak   {
+            background: linear-gradient(180deg, rgba(143,64,0,0.8), rgba(188,108,37,0.4));
+            box-shadow: 0 0 18px rgba(188,108,37,0.18);
+        }
+
+        .rush-time {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            opacity: 0.65;
+            text-align: center;
+        }
+
+        .rush-meal-label {
+            font-size: 0.68rem;
+            text-align: center;
+            opacity: 0.55;
+            line-height: 1.25;
+            max-width: 90px;
+        }
+
+        .rush-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.18rem 0.5rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .rush-badge.badge-closed { background: rgba(88,129,87,0.07); color: rgba(28,43,30,0.35); }
+        .rush-badge.badge-low    { background: rgba(88,129,87,0.15); color: #386641; }
+        .rush-badge.badge-medium { background: rgba(224,169,109,0.2); color: #a05c1b; }
+        .rush-badge.badge-peak   { background: rgba(188,108,37,0.2); color: #8f4000; }
+
+        .rush-legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(88, 129, 87, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .rush-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            opacity: 0.7;
+        }
+
+        .rush-legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 1024px) {
+            .brief-metrics-row { grid-template-columns: repeat(2, 1fr); }
+            .brief-bottom-row  { grid-template-columns: 1fr; }
+            .rush-timeline     { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .brief-metrics-row { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .brief-directive-card { flex-direction: column; }
+            .rush-timeline { grid-template-columns: repeat(4, 1fr); }
+            .brief-date-display { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Gradient Blobs -->
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- 1. Sticky Navbar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="nav-logo">
+            <i class="fa-solid fa-leaf"></i>
+            <span>CrumbIQ</span>
+        </a>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#operations">Today's Brief</a></li>
+            <li><a href="#rush-hour">Rush Hours</a></li>
+            <li><a href="#dashboard">Analytics</a></li>
+            <li><a href="#predict">Planner</a></li>
+            <li><a href="#insights">Insights</a></li>
+            <li><a href="#impact">Impact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <a href="#predict" class="btn btn-primary" style="padding: 0.6rem 1.4rem; font-size: 0.9rem;">Optimize Today <i class="fa-solid fa-bolt" style="font-size:0.8rem;"></i></a>
+        </div>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- 2. Hero Section -->
+    <section class="hero" id="hero">
+        <canvas class="hero-canvas" id="particles-canvas"></canvas>
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content reveal">
+                    <h1 class="hero-title">Smarter Cafeteria Decisions, <span>Powered by AI.</span></h1>
+                    <p class="hero-subtitle">CrumbIQ helps cafeterias predict demand, optimize preparation, reduce overproduction, and minimize operational waste — so your team knows exactly what to cook, and how much, before service begins.</p>
+                    <div class="hero-buttons">
+                        <a href="#operations" class="btn btn-primary">Explore Insights <i class="fa-solid fa-chart-line"></i></a>
+                        <a href="#predict" class="btn btn-secondary">Optimize Today</a>
+                    </div>
+                </div>
+                <div class="hero-visual reveal stagger-1">
+                    <canvas id="three-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. TODAY'S CAFETERIA BRIEF -->
+    <section class="brief-section" id="operations">
+        <div class="container">
+            <div class="brief-header-row reveal">
+                <div>
+                    <div class="live-chip"><span class="chip-dot"></span> AI Operational Brief</div>
+                    <h2 style="text-align:left; margin-bottom:0; margin-top: 0.6rem;">Today's Cafeteria Intelligence</h2>
+                </div>
+                <div class="brief-date-display" id="brief-date-display"></div>
+            </div>
+            <p class="section-desc reveal stagger-1" style="text-align:left; margin-left:0; margin-bottom:2rem;">Your AI-generated daily summary — built from historical patterns, peak-time demand curves, and attendance forecasts to guide every prep decision before service starts.</p>
+
+            <!-- 4-metric row -->
+            <div class="brief-metrics-row reveal stagger-2">
+                <div class="glass-card brief-metric-card tilt-card">
+                    <div class="brief-metric-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="brief-metric-val counter" data-target="310" data-format="integer">0</div>
+                    <div class="brief-metric-label">Expected Turnout</div>
+                </div>
+                <div class="glass-card brief-metric-card tilt-card">
+                    <div class="brief-metric-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <div class="brief-metric-val counter" data-target="18.4" data-format="decimal">0.0</div>
+                    <div class="brief-metric-label">Predicted Waste (KG)</div>
+                </div>
+                <div class="glass-card brief-metric-card tilt-card">
+                    <div class="brief-metric-icon" style="background:rgba(143,64,0,0.1);color:#8f4000;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <div class="brief-metric-val" style="color:#8f4000;">₹<span class="counter" data-target="1240" data-format="integer">0</span></div>
+                    <div class="brief-metric-label">Estimated Daily Loss</div>
+                </div>
+                <div class="glass-card brief-metric-card tilt-card">
+                    <div class="brief-metric-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="brief-metric-val counter" data-target="94.2" data-format="percent">~0%</div>
+                    <div class="brief-metric-label">Model Confidence</div>
+                </div>
+            </div>
+
+            <!-- AI Directive Card -->
+            <div class="brief-directive-card reveal stagger-2">
+                <div class="directive-icon"><i class="fa-solid fa-robot"></i></div>
+                <div style="flex:1;">
+                    <div class="directive-chip"><i class="fa-solid fa-wand-magic-sparkles"></i> Today's AI Preparation Directive</div>
+                    <div class="directive-text" id="brief-directive">Reduce rice and grain preparation by 12% today. Section A lunch service is projected at highest waste volume. Batch-cook in 45-min cycles to avoid over-preparation.</div>
+                    <div class="directive-sub">Based on <span id="brief-day-name">today's</span> historical patterns — adjust your prep sheet before the 10:30 AM service start.</div>
+                </div>
+            </div>
+
+            <!-- Bottom 3 info cards -->
+            <div class="brief-bottom-row reveal stagger-3">
+                <div class="glass-card brief-bottom-card">
+                    <div class="brief-bottom-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+                    <div>
+                        <div class="brief-bottom-label">Highest Waste Category</div>
+                        <div class="brief-bottom-val" id="brief-top-category">Grains (Rice)</div>
+                    </div>
+                </div>
+                <div class="glass-card brief-bottom-card">
+                    <div class="brief-bottom-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div>
+                        <div class="brief-bottom-label">Peak Demand Window</div>
+                        <div class="brief-bottom-val" id="brief-peak-window">12:15 PM – 1:10 PM</div>
+                    </div>
+                </div>
+                <div class="glass-card brief-bottom-card">
+                    <div class="brief-bottom-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <div>
+                        <div class="brief-bottom-label">Sustainability Target</div>
+                        <div class="brief-bottom-val" id="brief-sustainability">Save 2.3 KG waste today</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. How CrumbIQ Works -->
+    <section class="how-section" id="how-it-works">
+        <div class="container">
+            <h2 class="reveal">How CrumbIQ Works</h2>
+            <p class="section-desc reveal stagger-1">We optimize dining operations through data aggregation, predictive modeling, and live menu planning to prevent food waste before prep begins.</p>
+            
+            <div class="flow-container reveal stagger-2">
+                <!-- SVG connecting dashed line -->
+                <svg class="flow-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path class="flow-line" d="M 150 60 C 350 10, 450 110, 600 60 C 750 10, 850 110, 1050 60" />
+                </svg>
+                
+                <div class="steps-grid">
+                    <!-- Step 1 -->
+                    <div class="glass-card step-card tilt-card">
+                        <div class="step-badge">1</div>
+                        <div class="step-icon"><i class="fa-solid fa-database"></i></div>
+                        <h3 class="step-title">Data Aggregation</h3>
+                        <p class="step-desc">Dining teams log operational parameters including the date, meal service, expected attendance, food categories, and canteen sections.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="glass-card step-card tilt-card">
+                        <div class="step-badge">2</div>
+                        <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+                        <h3 class="step-title">ML Forecasting</h3>
+                        <p class="step-desc">Our machine learning models analyze variables against historical patterns to compute expected waste weights and cost losses.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="glass-card step-card tilt-card">
+                        <div class="step-badge">3</div>
+                        <div class="step-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                        <h3 class="step-title">Shift Adjustments</h3>
+                        <p class="step-desc">Kitchen staff receive immediate, actionable recommendations to scale down portion sizes and adjust ingredient prep volumes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RUSH HOUR INTELLIGENCE -->
+    <section class="rush-section" id="rush-hour">
+        <div class="container">
+            <h2 class="reveal">Rush Hour Intelligence</h2>
+            <p class="section-desc reveal stagger-1">Expected cafeteria demand curve across today's full service window — use this to time your batch cooking, staffing rotations, and prep replenishments precisely.</p>
+
+            <div class="rush-timeline reveal stagger-2" id="rush-timeline"></div>
+
+            <div class="rush-legend reveal stagger-3">
+                <div class="rush-legend-item">
+                    <div class="rush-legend-dot" style="background:rgba(88,129,87,0.1); border:1px solid rgba(88,129,87,0.2);"></div>
+                    Service Closed
+                </div>
+                <div class="rush-legend-item">
+                    <div class="rush-legend-dot" style="background:rgba(88,129,87,0.55);"></div>
+                    Low Activity
+                </div>
+                <div class="rush-legend-item">
+                    <div class="rush-legend-dot" style="background:rgba(224,169,109,0.75);"></div>
+                    Moderate Demand
+                </div>
+                <div class="rush-legend-item">
+                    <div class="rush-legend-dot" style="background:rgba(143,64,0,0.8);"></div>
+                    Peak Rush
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Operational Analytics -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="container">
+            <h2 class="reveal">Operational Analytics</h2>
+            <p class="section-desc reveal stagger-1">Weekly waste trends, category breakdowns, and section-by-section efficiency metrics — giving kitchen managers the data they need to adjust preparation volumes in advance.</p>
+            
+            <div class="dashboard-grid reveal stagger-2">
+                <!-- Line Chart Card -->
+                <div class="glass-card chart-main-card">
+                    <div class="chart-title">
+                        Weekly Waste Trend by Canteen Section <span>Live Updates</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Side Charts Stack -->
+                <div class="chart-side-grid">
+                    <!-- Donut Chart Card -->
+                    <div class="glass-card chart-sub-card">
+                        <div class="chart-title">
+                            Waste Weight by Category <span>Weekly Share</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Bar Chart Card -->
+                    <div class="glass-card chart-sub-card">
+                        <div class="chart-title">
+                            Canteen Section Performance Comparison <span>Daily Avg (KG)</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Streamlit Sandbox Integration -->
+            <div class="glass-card streamlit-sandbox-card reveal stagger-3">
+                <div class="streamlit-info">
+                    <div class="kpi-icon" style="background: rgba(88, 129, 87, 0.2); flex-shrink: 0;">
+                        <i class="fa-solid fa-file-csv" style="font-size: 1.6rem;"></i>
+                    </div>
+                    <div style="text-align: left;">
+                        <h3 style="font-family: var(--font-headings); font-size: clamp(1.2rem, 2vw, 1.4rem); margin-bottom: 0.4rem; color: var(--text-dark);">Interactive Analytics Sandbox</h3>
+                        <p style="font-size: 0.95rem; opacity: 0.85; max-width: 720px; line-height: 1.5;">Have your own campus dining CSV logs? Upload them to our external Streamlit engine to generate custom visualizations, carbon calculators, and waste reports instantly.</p>
+                    </div>
+                </div>
+                <a href="https://food-wastedashboard.streamlit.app/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="flex-shrink: 0; padding: 0.8rem 1.6rem; font-size: 0.95rem;">
+                    Upload CSV <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85rem;"></i>
+                </a>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="dashboard-row-bottom reveal stagger-3">
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-scale-unbalanced"></i></div>
+                    <div>
+                        <div class="kpi-val counter" data-target="1280" data-format="integer">0</div>
+                        <div class="kpi-lbl">Total Waste This Month (KG)</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <div>
+                        <div class="kpi-val counter" data-target="18.5" data-format="percent">~0%</div>
+                        <div class="kpi-lbl">Waste Reduction MoM</div>
+                    </div>
+                </div>
+                <div class="glass-card kpi-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <div>
+                        <div class="kpi-val">₹<span class="counter" data-target="48600" data-format="integer">0</span></div>
+                        <div class="kpi-lbl">Monthly Savings Realized</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. SMART PREPARATION PLANNER -->
+    <section class="predict-section" id="predict">
+        <div class="container">
+            <h2 class="reveal">Smart Preparation Planner</h2>
+            <p class="section-desc reveal stagger-1">Input your service parameters and CrumbIQ's ML engine instantly returns predicted waste, estimated financial loss, risk level, and a precise kitchen preparation directive for your team.</p>
+            
+            <div class="predict-grid">
+                <!-- Form -->
+                <div class="glass-card reveal stagger-2">
+                    <form id="prediction-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label for="meal-type">Meal Service</label>
+                                <div class="select-wrapper">
+                                    <select id="meal-type" class="form-control" required>
+                                        <option value="Breakfast">Breakfast</option>
+                                        <option value="Lunch" selected>Lunch</option>
+                                        <option value="Dinner">Dinner</option>
+                                        <option value="Snacks">Snacks</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="canteen-section">Canteen Section</label>
+                                <div class="select-wrapper">
+                                    <select id="canteen-section" class="form-control" required>
+                                        <option value="Section A">Section A (Main Hall)</option>
+                                        <option value="Section B" selected>Section B (Stands)</option>
+                                        <option value="Section C">Section C (Annex)</option>
+                                        <option value="Section D">Section D (Cafe)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                            <div class="form-group">
+                                <label for="food-category">Food Category</label>
+                                <div class="select-wrapper">
+                                    <select id="food-category" class="form-control" required>
+                                        <option value="Grains" selected>Grains (Rice, Breads)</option>
+                                        <option value="Proteins">Proteins (Meats, Lentils)</option>
+                                        <option value="Vegetables">Vegetables (Sides, Salads)</option>
+                                        <option value="Fruits">Fruits</option>
+                                        <option value="Dairy">Dairy (Yogurt, Milk)</option>
+                                        <option value="Desserts">Desserts</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="predict-date">Target Service Date</label>
+                                <input type="date" id="predict-date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="attendance">Expected Attendance: <span class="slider-val" id="attendance-val">275</span></label>
+                            <div class="range-slider-container">
+                                <input type="range" id="attendance" class="range-slider" min="50" max="500" value="275" step="5">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                            Predict Waste & Loss <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Prediction Results -->
+                <div class="predict-result-wrap reveal stagger-3">
+                    <div class="result-card-inner" id="result-card">
+                        <!-- Default Placeholder state -->
+                        <div id="result-placeholder">
+                            <div class="result-placeholder-icon"><i class="fa-solid fa-calculator"></i></div>
+                            <h3>Awaiting Forecaster Input</h3>
+                            <p style="font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; max-width: 250px; margin-left: auto; margin-right: auto;">Specify parameters on the left and trigger prediction to view expected cafeteria telemetry.</p>
+                        </div>
+                        
+                        <!-- Dynamic Loading State -->
+                        <div id="result-loader" style="display: none; text-align: center;">
+                            <div class="result-placeholder-icon" style="color: var(--primary-green); opacity: 0.85;">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            </div>
+                            <h3>Analyzing Cafeteria Dynamics...</h3>
+                            <p style="font-size: 0.9rem; opacity: 0.75; margin-top: 0.5rem; max-width: 250px; margin-left: auto; margin-right: auto;">Running forecasting model to compute portion adjustments and financial loss.</p>
+                        </div>
+
+                        <!-- Dynamic Error State -->
+                        <div id="result-error" style="display: none; text-align: center; color: #8f4000;">
+                            <div class="result-placeholder-icon" style="color: #8f4000; opacity: 0.85;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                            <h3>Forecaster Unavailable</h3>
+                            <p id="error-message" style="font-size: 0.9rem; opacity: 0.85; margin-top: 0.5rem; max-width: 260px; margin-left: auto; margin-right: auto;">Failed to communicate with prediction service. Ensure the Flask API is running on port 5000.</p>
+                            <button type="button" id="retry-btn" class="btn btn-secondary" style="margin-top: 1.5rem; padding: 0.5rem 1.2rem; font-size: 0.85rem; border-color: #8f4000; color: #8f4000; background: rgba(188, 108, 37, 0.1);">Retry Forecast</button>
+                        </div>
+
+                        <!-- Prediction Results Output -->
+                        <div id="result-content" style="display: none; width: 100%;">
+                            <h3 style="font-size: 1.1rem; font-weight: 600; opacity: 0.85; margin-bottom: 0.4rem;">Predicted Waste Weight</h3>
+                            <div class="result-val" id="predicted-weight">0.0 KG</div>
+                            <div class="impact-badge" id="predicted-impact">
+                                <i class="fa-solid fa-circle-check"></i> <span>Normal</span>
+                            </div>
+                            
+                            <div class="result-metrics" style="grid-template-columns: 1fr; gap: 1.25rem;">
+                                <div class="metric-item" style="border-bottom: 1px solid rgba(88, 129, 87, 0.15); padding-bottom: 1rem; margin-top: 1.5rem;">
+                                    <div class="metric-title"><i class="fa-solid fa-indian-rupee-sign"></i> Estimated Financial Loss</div>
+                                    <div class="metric-val" id="predicted-loss" style="font-size: 1.8rem; color: #8f4000;">₹0</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-title"><i class="fa-solid fa-lightbulb"></i> Recommended Kitchen Action</div>
+                                    <div class="metric-val" id="predicted-recommendation" style="font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-top: 0.3rem;">No adjustment needed.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. AI RECOMMENDATION ENGINE -->
+    <section class="insights-section" id="insights">
+        <div class="container">
+            <h2 class="reveal">AI Recommendation Engine</h2>
+            <p class="section-desc reveal stagger-1">Actionable operational intelligence derived from historical waste logs, attendance trends, and ML pattern analysis — updated daily to guide prep decisions across all canteen sections.</p>
+            
+            <div class="insights-grid">
+                <!-- Insight 1 -->
+                <div class="glass-card insight-card priority-high tilt-card reveal stagger-1">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge high">High Priority</div>
+                    <div class="insight-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <h3>Dinner Vegetable Surplus in Section A</h3>
+                    <p>Vegetable waste spikes 28% during weekday dinners in Section A. Trim prep sheet volume by 15% and switch to demand-pull batching after 6:30 PM.</p>
+                </div>
+                <!-- Insight 2 -->
+                <div class="glass-card insight-card priority-high tilt-card reveal stagger-2">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge high">High Priority</div>
+                    <div class="insight-icon"><i class="fa-solid fa-calendar-minus"></i></div>
+                    <h3>Friday Lunch Attendance Drop</h3>
+                    <p>Friday lunch sees a consistent 18% attendance decline due to early student departures. Reduce rice and grain cooking sheets by 20% every Friday before service.</p>
+                </div>
+                <!-- Insight 3 -->
+                <div class="glass-card insight-card priority-medium tilt-card reveal stagger-3">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge medium">Medium Priority</div>
+                    <div class="insight-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <h3>Section B Over-Preparation Pattern</h3>
+                    <p>Section B consistently generated 24% higher food prep residue this week versus baseline. Audit tray-return data and reduce portion sizes for rice and soup by one ladle.</p>
+                </div>
+                <!-- Insight 4 - full-width on narrow grids -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-1">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge low">Optimization</div>
+                    <div class="insight-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+                    <h3>Staggered Batch Cooking Saves 8%</h3>
+                    <p>Kitchens that switch from single large batches to 45-minute staggered cooking cycles see an average 8% reduction in end-of-service waste across all food categories.</p>
+                </div>
+                <!-- Insight 5 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-2">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge low">Optimization</div>
+                    <div class="insight-icon"><i class="fa-solid fa-temperature-low"></i></div>
+                    <h3>Cold-Hold Dairy After 1:30 PM</h3>
+                    <p>Dairy products left on counter past 1:30 PM have a 3× higher disposal rate. Move remaining milk and curd reserves to cold storage immediately after peak lunch service.</p>
+                </div>
+                <!-- Insight 6 -->
+                <div class="glass-card insight-card priority-medium tilt-card reveal stagger-3">
+                    <div class="pulse-dot"></div>
+                    <div class="priority-badge medium">Medium Priority</div>
+                    <div class="insight-icon"><i class="fa-solid fa-fish"></i></div>
+                    <h3>Protein Waste Peaks Mid-Week</h3>
+                    <p>Meat and protein entrées show highest waste on Tuesdays and Wednesdays. Shift protein-heavy menus to Monday and Thursday when attendance is typically 12% higher.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Financial Impact Section -->
+    <section class="financial-section" id="financials">
+        <div class="container">
+            <h2 class="reveal">Financial Cost Control</h2>
+            <p class="section-desc reveal stagger-1">Economic optimization telemetry showing baseline cafeteria food loss costs and actual budget savings realized through predictive prep adjustments.</p>
+
+            <div class="financial-grid">
+                <!-- Card 1 -->
+                <div class="glass-card stat-card tilt-card reveal stagger-1" style="text-align: center;">
+                    <div class="stat-icon" style="background: rgba(143, 64, 0, 0.15); color: #8f4000;">
+                        <i class="fa-solid fa-chart-line-down"></i>
+                    </div>
+                    <div class="stat-number">₹<span class="counter" data-target="48600" data-format="integer" style="color: #8f4000;">0</span></div>
+                    <div class="stat-label">Baseline Loss (Monthly)</div>
+                    <p class="stat-desc">Historical average food budget loss before implementing predictive scheduling.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card stat-card tilt-card reveal stagger-2" style="text-align: center;">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-piggy-bank"></i>
+                    </div>
+                    <div class="stat-number">₹<span class="counter" data-target="38800" data-format="integer">0</span></div>
+                    <div class="stat-label">Savings Realized</div>
+                    <p class="stat-desc">Actual dining hall budget reclaimed through automated portion adjustments.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card stat-card tilt-card reveal stagger-3" style="text-align: center;">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <div class="stat-number counter" data-target="80" data-format="percent">0%</div>
+                    <div class="stat-label">Budget Recovery Rate</div>
+                    <p class="stat-desc">Percentage of food waste financial loss successfully avoided each month.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card stat-card tilt-card reveal stagger-4" style="text-align: center;">
+                    <div class="stat-icon" style="background: rgba(123, 174, 127, 0.15); color: var(--primary-green);">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <div class="stat-number counter" data-target="1.45" data-format="decimal" style="color: var(--primary-green);">0.0</div>
+                    <div class="stat-label">Efficiency Multiplier</div>
+                    <p class="stat-desc">Budget utilization improvement index for cafeteria operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Sustainability Impact Section -->
+    <section class="impact-section" id="impact">
+        <div class="impact-mesh"></div>
+        <div class="container">
+            <div class="quote-container reveal">
+                <div class="quote-icon"><i class="fa-solid fa-quote-left"></i></div>
+                <blockquote class="pull-quote">"Every meal optimized is a choice for the planet. Operational efficiency drives sustainability."</blockquote>
+                <div class="quote-author">CrumbIQ Sustainability Standard</div>
+            </div>
+
+            <div class="impact-grid">
+                <!-- Impact Stat 1 -->
+                <div class="glass-card impact-card-stat tilt-card reveal stagger-1">
+                    <div class="impact-val counter" data-target="2450" data-format="integer">0</div>
+                    <div class="impact-lbl">Food Waste Prevented (KG)</div>
+                </div>
+                <!-- Impact Stat 2 -->
+                <div class="glass-card impact-card-stat tilt-card reveal stagger-2">
+                    <div class="impact-val counter" data-target="6200" data-format="co2">0 KG</div>
+                    <div class="impact-lbl">CO₂ Emissions Avoided</div>
+                </div>
+                <!-- Impact Stat 3 -->
+                <div class="glass-card impact-card-stat tilt-card reveal stagger-3">
+                    <div class="impact-val counter" data-target="2.4" data-format="million-liters">0M Liters</div>
+                    <div class="impact-lbl">Water Resources Conserved</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. How CrumbIQ Helps Section -->
+    <section class="how-section" id="helps" style="background-color: var(--bg-alt-1);">
+        <div class="container">
+            <h2 class="reveal">How CrumbIQ Solves Cafeteria Problems</h2>
+            <p class="section-desc reveal stagger-1">A direct overview of the operational benefits designed specifically for institutional cafeteria managers.</p>
+            
+            <div class="insights-grid">
+                <!-- Benefit 1 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-1">
+                    <div class="insight-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                    <h3>Reduce Over-Preparation</h3>
+                    <p>By matching student attendance estimates against historical plate residues, CrumbIQ maps actual portions needed, eliminating redundant volumes.</p>
+                </div>
+                <!-- Benefit 2 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-2">
+                    <div class="insight-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3>Optimize Food Planning</h3>
+                    <p>Integrates calendar cycles, institutional breaks, weather forecasts, and historical logs to build predictive prep recommendations days in advance.</p>
+                </div>
+                <!-- Benefit 3 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-3">
+                    <div class="insight-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <h3>Minimize Budget Losses</h3>
+                    <p>Directly saves thousands of rupees weekly by ensuring expensive protein and dessert categories are prepared in tight alignment with active demand.</p>
+                </div>
+                <!-- Benefit 4 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-1" style="margin-top: 1.5rem;">
+                    <div class="insight-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h3>Analyze Waste Patterns</h3>
+                    <p>Provides dining operations directors with granular insight into waste distributions across different canteen sections and meal times.</p>
+                </div>
+                <!-- Benefit 5 -->
+                <div class="glass-card insight-card priority-low tilt-card reveal stagger-2" style="margin-top: 1.5rem;">
+                    <div class="insight-icon"><i class="fa-solid fa-leaf"></i></div>
+                    <h3>Institutional Sustainability</h3>
+                    <p>Translates kitchen waste reduction parameters into verified carbon offsets and water savings to support university environmental audits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3><i class="fa-solid fa-leaf"></i> CrumbIQ</h3>
+                <p>Equipping college and university cafeterias with predictive machine learning to forecast demand, prevent over-preparation waste, and optimize dining room budgets.</p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#operations">Operations Overview</a></li>
+                    <li><a href="#dashboard">Analytics Dashboard</a></li>
+                    <li><a href="#predict">Waste Predictor</a></li>
+                    <li><a href="#insights">Recommendations</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-newsletter">
+                <h4>Join the Operations Digest</h4>
+                <p>Subscribe to our monthly digest on cafeteria planning, supply optimization, and case studies.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!'); this.reset();">
+                    <input type="email" placeholder="Email address" class="newsletter-input" required aria-label="Email address">
+                    <button type="submit" class="newsletter-submit">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; 2026 CrumbIQ Inc. All rights reserved.</div>
+            <div class="footer-tagline">Optimizing dining operations. Preserving planet resources.</div>
+        </div>
+    </footer>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Page Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // ---------------------------------------------------------
+            // Navbar Mobile Toggle
+            // ---------------------------------------------------------
+            const navToggle = document.getElementById('nav-toggle');
+            const navLinks = document.getElementById('nav-links');
+            const navbar = document.getElementById('navbar');
+
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                const icon = navToggle.querySelector('i');
+                if (navLinks.classList.contains('active')) {
+                    icon.className = 'fa-solid fa-xmark';
+                } else {
+                    icon.className = 'fa-solid fa-bars';
+                }
+            });
+
+            // Close mobile menu when a link is clicked
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    navToggle.querySelector('i').className = 'fa-solid fa-bars';
+                });
+            });
+
+            // Scroll class for navbar
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // ---------------------------------------------------------
+            // GSAP-style Scroll Reveal System
+            // ---------------------------------------------------------
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // ---------------------------------------------------------
+            // Number Counter Animation
+            // ---------------------------------------------------------
+            const counters = document.querySelectorAll('.counter');
+            const counterObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const countTo = parseFloat(target.getAttribute('data-target'));
+                        const duration = 2000; // 2 seconds
+                        const startTime = performance.now();
+                        const format = target.getAttribute('data-format') || 'integer';
+                        
+                        const animate = (currentTime) => {
+                            const elapsedTime = currentTime - startTime;
+                            const progress = Math.min(elapsedTime / duration, 1);
+                            
+                            // Easing: outQuad
+                            const ease = progress * (2 - progress);
+                            const currentValue = ease * countTo;
+                            
+                            if (format === 'percent') {
+                                target.innerText = `${Math.round(currentValue)}%`;
+                            } else if (format === 'water') {
+                                target.innerText = `${Math.round(currentValue).toLocaleString()}L`;
+                            } else if (format === 'million-liters') {
+                                target.innerText = `${currentValue.toFixed(1)}M Liters`;
+                            } else if (format === 'billion') {
+                                target.innerText = `${currentValue.toFixed(1)} Billion tons`;
+                            } else if (format === 'co2') {
+                                target.innerText = `${Math.round(currentValue).toLocaleString()} KG`;
+                            } else if (format === 'integer') {
+                                target.innerText = Math.round(currentValue).toLocaleString();
+                            } else if (format === 'decimal') {
+                                target.innerText = currentValue.toFixed(2);
+                            } else {
+                                target.innerText = Math.round(currentValue);
+                            }
+                            
+                            if (progress < 1) {
+                                requestAnimationFrame(animate);
+                            } else {
+                                if (format === 'percent') target.innerText = `${countTo}%`;
+                                else if (format === 'water') target.innerText = `${countTo.toLocaleString()}L`;
+                                else if (format === 'million-liters') target.innerText = `${countTo}M Liters`;
+                                else if (format === 'billion') target.innerText = `${countTo} Billion tons`;
+                                else if (format === 'co2') target.innerText = `${countTo.toLocaleString()} KG`;
+                                else if (format === 'integer') target.innerText = countTo.toLocaleString();
+                                else if (format === 'decimal') target.innerText = countTo.toFixed(2);
+                            }
+                        };
+                        
+                        requestAnimationFrame(animate);
+                        observer.unobserve(target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            counters.forEach(c => counterObserver.observe(c));
+
+            // ---------------------------------------------------------
+            // Hover Tilt Effect (3D Card Tilt)
+            // ---------------------------------------------------------
+            const isMobile = window.innerWidth <= 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!isMobile) {
+                const tiltCards = document.querySelectorAll('.tilt-card');
+                tiltCards.forEach(card => {
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        
+                        // Limit tilt to 12 degrees max
+                        const rotateX = ((centerY - y) / centerY) * 12;
+                        const rotateY = ((x - centerX) / centerX) * 12;
+                        
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    });
+                });
+            }
+
+            // ---------------------------------------------------------
+            // Hero Floating Canvas Particles
+            // ---------------------------------------------------------
+            const initParticles = () => {
+                const pCanvas = document.getElementById('particles-canvas');
+                if (!pCanvas) return;
+                const ctx = pCanvas.getContext('2d');
+                let animationFrameId;
+                
+                let width = pCanvas.width = pCanvas.offsetWidth;
+                let height = pCanvas.height = pCanvas.offsetHeight;
+                
+                window.addEventListener('resize', () => {
+                    if (pCanvas.offsetWidth && pCanvas.offsetHeight) {
+                        width = pCanvas.width = pCanvas.offsetWidth;
+                        height = pCanvas.height = pCanvas.offsetHeight;
+                    }
+                });
+
+                const particleCount = isMobile ? 12 : 35;
+                const particles = [];
+
+                class Particle {
+                    constructor() {
+                        this.reset();
+                        this.y = Math.random() * height; // Distribute vertically at start
+                    }
+
+                    reset() {
+                        this.x = Math.random() * width;
+                        this.y = height + 20;
+                        this.size = Math.random() * 5 + 3;
+                        this.speedY = Math.random() * 0.8 + 0.4;
+                        this.swaySpeed = Math.random() * 0.02 + 0.01;
+                        this.swayDistance = Math.random() * 30 + 10;
+                        this.angle = Math.random() * Math.PI * 2;
+                        this.rotSpeed = Math.random() * 0.01 - 0.005;
+                        this.opacity = Math.random() * 0.4 + 0.2;
+                        // Choose a green hue
+                        this.color = Math.random() > 0.5 ? '#7BAE7F' : '#A3B18A';
+                    }
+
+                    update() {
+                        this.y -= this.speedY;
+                        this.angle += this.swaySpeed;
+                        this.x += Math.sin(this.angle) * 0.3;
+                        
+                        if (this.y < -20) {
+                            this.reset();
+                        }
+                    }
+
+                    draw() {
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.angle);
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = this.opacity;
+                        
+                        // Draw organic leaf shape/crumb
+                        ctx.beginPath();
+                        ctx.moveTo(0, -this.size);
+                        ctx.quadraticCurveTo(this.size * 0.7, 0, 0, this.size);
+                        ctx.quadraticCurveTo(-this.size * 0.7, 0, 0, -this.size);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }
+
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+
+                const loop = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw();
+                    });
+                    animationFrameId = requestAnimationFrame(loop);
+                };
+
+                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    loop();
+                }
+            };
+            initParticles();
+
+            // ---------------------------------------------------------
+            // Three.js 3D Leaf Animation
+            // ---------------------------------------------------------
+            const initThreeLeaf = () => {
+                const canvas = document.getElementById('three-canvas');
+                if (!canvas) return;
+
+                const parent = canvas.parentElement;
+                let w = parent.offsetWidth;
+                let h = parent.offsetHeight;
+
+                // Scene
+                const scene = new THREE.Scene();
+
+                // Camera
+                const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+                camera.position.z = 6;
+
+                // Renderer
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: canvas,
+                    alpha: true,
+                    antialias: true
+                });
+                renderer.setSize(w, h);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                // Lights
+                const ambientLight = new THREE.AmbientLight(0xD8EAD3, 0.6);
+                scene.add(ambientLight);
+
+                const dirLight1 = new THREE.DirectionalLight(0x7BAE7F, 1.2);
+                dirLight1.position.set(5, 5, 4);
+                scene.add(dirLight1);
+
+                const dirLight2 = new THREE.DirectionalLight(0x588157, 0.8);
+                dirLight2.position.set(-5, -3, 2);
+                scene.add(dirLight2);
+
+                // Leaf Geometry (Procedural Low-Poly Style)
+                const geometry = new THREE.BufferGeometry();
+                const vertices = new Float32Array([
+                    // Center spine
+                    0.0, 2.2, 0.15,   // 0: tip
+                    0.0, 0.8, 0.4,    // 1: upper mid
+                    0.0, -0.4, 0.25,  // 2: lower mid
+                    0.0, -1.6, 0.0,   // 3: base
+                    0.0, -2.4, -0.15, // 4: stem end
+
+                    // Left edge
+                    -1.0, 1.1, 0.05,  // 5: upper left
+                    -1.4, 0.1, -0.1,  // 6: middle left
+                    -0.8, -0.9, -0.1, // 7: lower left
+
+                    // Right edge
+                    1.0, 1.1, 0.05,   // 8: upper right
+                    1.4, 0.1, -0.1,   // 9: middle right
+                    0.8, -0.9, -0.1   // 10: lower right
+                ]);
+
+                const indices = [
+                    // Left triangles
+                    0, 5, 1,
+                    1, 5, 6,
+                    1, 6, 2,
+                    2, 6, 7,
+                    2, 7, 3,
+
+                    // Right triangles
+                    0, 1, 8,
+                    1, 8, 9,
+                    1, 9, 2,
+                    2, 9, 10,
+                    2, 10, 3,
+
+                    // Stem connector
+                    3, 7, 4,
+                    3, 4, 10
+                ];
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+                geometry.setIndex(indices);
+                geometry.computeVertexNormals();
+
+                // Material (Flat shaded green)
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x588157,
+                    roughness: 0.35,
+                    metalness: 0.08,
+                    side: THREE.DoubleSide,
+                    flatShading: true
+                });
+
+                const leafMesh = new THREE.Mesh(geometry, material);
+                scene.add(leafMesh);
+
+                // Add dark green veins lines overlay
+                const veinPoints = [
+                    new THREE.Vector3(0, 2.2, 0.17), new THREE.Vector3(0, 0.8, 0.42),
+                    new THREE.Vector3(0, 0.8, 0.42), new THREE.Vector3(0, -0.4, 0.27),
+                    new THREE.Vector3(0, -0.4, 0.27), new THREE.Vector3(0, -1.6, 0.02),
+                    new THREE.Vector3(0, -1.6, 0.02), new THREE.Vector3(0, -2.4, -0.13),
+                    
+                    // Left veins
+                    new THREE.Vector3(0, 0.8, 0.42), new THREE.Vector3(-1.0, 1.1, 0.07),
+                    new THREE.Vector3(0, -0.4, 0.27), new THREE.Vector3(-1.4, 0.1, -0.08),
+                    new THREE.Vector3(0, -0.4, 0.27), new THREE.Vector3(-0.8, -0.9, -0.08),
+                    
+                    // Right veins
+                    new THREE.Vector3(0, 0.8, 0.42), new THREE.Vector3(1.0, 1.1, 0.07),
+                    new THREE.Vector3(0, -0.4, 0.27), new THREE.Vector3(1.4, 0.1, -0.08),
+                    new THREE.Vector3(0, -0.4, 0.27), new THREE.Vector3(0.8, -0.9, -0.08)
+                ];
+
+                const veinGeom = new THREE.BufferGeometry().setFromPoints(veinPoints);
+                const veinMat = new THREE.LineBasicMaterial({
+                    color: 0x2d4432,
+                    linewidth: 2
+                });
+                const veins = new THREE.LineSegments(veinGeom, veinMat);
+                leafMesh.add(veins);
+
+                // Resize handler
+                window.addEventListener('resize', () => {
+                    w = parent.offsetWidth;
+                    h = parent.offsetHeight;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                });
+
+                // Mouse interaction rotation offset
+                let targetRotationX = 0;
+                let targetRotationY = 0;
+                
+                if (!isMobile) {
+                    window.addEventListener('mousemove', (e) => {
+                        const halfW = window.innerWidth / 2;
+                        const halfH = window.innerHeight / 2;
+                        // Map mouse position to -0.5 to 0.5 range
+                        targetRotationY = ((e.clientX - halfW) / halfW) * 0.4;
+                        targetRotationX = ((e.clientY - halfH) / halfH) * 0.4;
+                    });
+                }
+
+                // Animation loop
+                const animate = () => {
+                    requestAnimationFrame(animate);
+
+                    // Automatic slow rotation
+                    leafMesh.rotation.y += 0.006;
+                    leafMesh.rotation.x = Math.sin(Date.now() * 0.001) * 0.1;
+
+                    // Interpolate mouse rotation offsets
+                    if (!isMobile) {
+                        leafMesh.rotation.y += (targetRotationY - leafMesh.rotation.y) * 0.05;
+                        leafMesh.rotation.x += (targetRotationX - leafMesh.rotation.x) * 0.05;
+                    }
+
+                    renderer.render(scene, camera);
+                };
+
+                if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    animate();
+                } else {
+                    // Just draw once
+                    leafMesh.rotation.y = 0.5;
+                    leafMesh.rotation.x = 0.2;
+                    renderer.render(scene, camera);
+                }
+            };
+            
+            // Wait slightly for dimensions to layout before Three initialization
+            setTimeout(initThreeLeaf, 150);
+
+            // ---------------------------------------------------------
+            // Dashboard Charts (Chart.js Configuration)
+            // ---------------------------------------------------------
+            const textDark = '#1C2B1E';
+            const primaryGreen = '#588157';
+            const accentGreen = '#7BAE7F';
+            const lightSage = '#A3B18A';
+            const altGreen = '#C9E0C3';
+            
+            // Common Tooltip Config for styling
+            const chartTooltipConfig = {
+                backgroundColor: 'rgba(28, 43, 30, 0.95)',
+                titleFont: { family: 'Playfair Display', size: 13 },
+                bodyFont: { family: 'DM Sans', size: 12 },
+                titleColor: '#D8EAD3',
+                bodyColor: '#D8EAD3',
+                borderColor: '#7BAE7F',
+                borderWidth: 1,
+                padding: 10,
+                displayColors: false
+            };
+
+            // 1. Line Chart: Weekly Waste Trend by Section
+            const ctxLine = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        {
+                            label: 'Section A (Main)',
+                            data: [45.2, 41.8, 48.5, 43.1, 51.6, 22.4, 18.0],
+                            borderColor: primaryGreen,
+                            backgroundColor: 'rgba(88, 129, 87, 0.08)',
+                            borderWidth: 3,
+                            pointBackgroundColor: primaryGreen,
+                            pointRadius: 3,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Section B (Stands)',
+                            data: [24.1, 26.5, 22.8, 28.2, 31.4, 10.5, 9.2],
+                            borderColor: accentGreen,
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointBackgroundColor: accentGreen,
+                            pointRadius: 3,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Section C (Annex)',
+                            data: [31.8, 29.4, 34.0, 31.5, 36.8, 15.2, 12.5],
+                            borderColor: lightSage,
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointBackgroundColor: lightSage,
+                            pointRadius: 3,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Section D (Cafe)',
+                            data: [12.5, 11.2, 14.8, 12.0, 15.5, 6.4, 5.0],
+                            borderColor: '#3A5A40',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#3A5A40',
+                            pointRadius: 3,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: textDark,
+                                boxWidth: 10,
+                                font: { family: 'DM Sans', size: 9 }
+                            }
+                        },
+                        tooltip: chartTooltipConfig
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(88, 129, 87, 0.08)' },
+                            ticks: {
+                                color: textDark,
+                                font: { family: 'DM Sans', size: 10 }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: textDark,
+                                font: { family: 'DM Sans', size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Donut Chart: Waste by Category
+            const ctxDonut = document.getElementById('donutChart').getContext('2d');
+            new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Grains', 'Proteins', 'Vegetables', 'Fruits', 'Dairy', 'Desserts'],
+                    datasets: [{
+                        data: [35, 20, 25, 8, 7, 5],
+                        backgroundColor: [
+                            '#3A5A40',
+                            primaryGreen,
+                            accentGreen,
+                            lightSage,
+                            altGreen,
+                            '#BFDBBA'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#C9E0C3'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: textDark,
+                                boxWidth: 10,
+                                font: { family: 'DM Sans', size: 9 }
+                            }
+                        },
+                        tooltip: chartTooltipConfig
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // 3. Bar Chart: Section Comparison Daily Average
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Sec A', 'Sec B', 'Sec C', 'Sec D'],
+                    datasets: [{
+                        label: 'Average Waste (KG)',
+                        data: [38.6, 21.9, 27.3, 11.1],
+                        backgroundColor: [primaryGreen, accentGreen, lightSage, '#3A5A40'],
+                        borderRadius: 6,
+                        maxBarThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: chartTooltipConfig
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: 'rgba(88, 129, 87, 0.08)' },
+                            ticks: {
+                                color: textDark,
+                                font: { family: 'DM Sans', size: 10 }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: textDark,
+                                font: { family: 'DM Sans', size: 10 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // ---------------------------------------------------------
+            // Prediction Logic Formula (Cafeteria Platform)
+            // ---------------------------------------------------------
+            const attendanceSlider = document.getElementById('attendance');
+            const attendanceValDisplay = document.getElementById('attendance-val');
+            const predictionForm = document.getElementById('prediction-form');
+            const predictDateInput = document.getElementById('predict-date');
+            
+            const resultPlaceholder = document.getElementById('result-placeholder');
+            const resultContent = document.getElementById('result-content');
+            const resultCard = document.getElementById('result-card');
+            
+            const predictedWeight = document.getElementById('predicted-weight');
+            const predictedImpact = document.getElementById('predicted-impact');
+            const predictedLoss = document.getElementById('predicted-loss');
+            const predictedRecommendation = document.getElementById('predicted-recommendation');
+
+            // Initialize Tomorrow Date Picker
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            predictDateInput.value = tomorrow.toISOString().split('T')[0];
+
+            // Sync Slider Display value
+            attendanceSlider.addEventListener('input', (e) => {
+                attendanceValDisplay.innerText = e.target.value;
+            });
+
+            const submitBtn = predictionForm.querySelector('button[type="submit"]');
+            const resultLoader  = document.getElementById('result-loader');
+            const resultError   = document.getElementById('result-error');
+            const errorMessage  = document.getElementById('error-message');
+            const retryBtn      = document.getElementById('retry-btn');
+
+            function showState(state) {
+                resultPlaceholder.style.display = state === 'placeholder' ? 'block' : 'none';
+                resultLoader.style.display      = state === 'loading'     ? 'block' : 'none';
+                resultError.style.display       = state === 'error'       ? 'block' : 'none';
+                resultContent.style.display     = state === 'result'      ? 'block' : 'none';
+            }
+
+            function animateCounter(el, targetVal, suffix, duration) {
+                const start = performance.now();
+                const from  = parseFloat(el.innerText) || 0;
+                const tick  = (now) => {
+                    const p    = Math.min((now - start) / duration, 1);
+                    const ease = p * (2 - p);
+                    el.innerText = (from + (targetVal - from) * ease).toFixed(suffix === ' KG' ? 1 : 0) + suffix;
+                    if (p < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            }
+
+            async function runPrediction() {
+                const meal       = document.getElementById('meal-type').value;
+                const section    = document.getElementById('canteen-section').value;
+                const category   = document.getElementById('food-category').value;
+                const attendance = parseInt(attendanceSlider.value);
+                const dateStr    = predictDateInput.value;
+
+                showState('loading');
+                submitBtn.disabled = true;
+                resultCard.classList.remove('calculated');
+                resultCard.style.transform = 'scale(0.98)';
+                resultCard.style.opacity   = '0.8';
+
+                try {
+                    const response = await fetch('/predict', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            Meal:             meal,
+                            Canteen_Section:  section,
+                            Food_Category:    category,
+                            attendance:       attendance,
+                            Date:             dateStr,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.error || `Server error ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    const waste    = data.predicted_waste;
+                    const loss     = data.estimated_loss;
+                    const risk     = data.risk;
+                    const riskLvl  = data.risk_level;
+                    const rec      = data.recommendation;
+
+                    let ratingClass = 'impact-low';
+                    let ratingIcon  = 'fa-circle-check';
+                    if (riskLvl === 'medium') { ratingClass = 'impact-medium'; ratingIcon = 'fa-triangle-exclamation'; }
+                    if (riskLvl === 'high')   { ratingClass = 'impact-high';   ratingIcon = 'fa-circle-exclamation'; }
+
+                    resultCard.classList.add('calculated');
+                    showState('result');
+                    resultCard.style.transform = 'scale(1)';
+                    resultCard.style.opacity   = '1';
+
+                    predictedWeight.innerText = `${waste.toFixed(1)} KG`;
+                    animateCounter(predictedWeight, waste, ' KG', 900);
+
+                    predictedImpact.className = `impact-badge ${ratingClass}`;
+                    predictedImpact.innerHTML = `<i class="fa-solid ${ratingIcon}"></i> <span>${risk}</span>`;
+
+                    predictedLoss.innerText = `₹${Math.round(loss).toLocaleString('en-IN')}`;
+                    predictedRecommendation.innerText = rec;
+
+                } catch (err) {
+                    showState('error');
+                    errorMessage.innerText = err.message || 'Failed to communicate with the prediction service.';
+                    resultCard.style.transform = 'scale(1)';
+                    resultCard.style.opacity   = '1';
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            }
+
+            predictionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                runPrediction();
+            });
+
+            retryBtn.addEventListener('click', () => {
+                runPrediction();
+            });
+
+            // ---------------------------------------------------------
+            // TODAY'S CAFETERIA BRIEF — Dynamic Date & Directives
+            // ---------------------------------------------------------
+            (function initBrief() {
+                const now = new Date();
+                const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                const dayName = days[now.getDay()];
+                const dateStr = `${dayName}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+                const dateEl = document.getElementById('brief-date-display');
+                if (dateEl) dateEl.textContent = dateStr;
+
+                const dayNameEl = document.getElementById('brief-day-name');
+                if (dayNameEl) dayNameEl.textContent = dayName + "'s";
+
+                // Day-of-week specific directives
+                const directives = {
+                    0: { // Sunday
+                        directive: "Sunday service runs at 65% normal capacity. Reduce all preparation volumes by 30% across sections. Minimise protein cooking — demand is historically lowest today.",
+                        category: "Vegetables (Sides)",
+                        peak: "1:00 PM – 2:00 PM",
+                        sustainability: "Save 3.1 KG waste today",
+                    },
+                    1: { // Monday
+                        directive: "Monday lunch shows above-average attendance after the weekend gap. Maintain standard preparation volumes. Watch grain portions in Section A — historically 14% surplus on Mondays.",
+                        category: "Grains (Rice)",
+                        peak: "12:30 PM – 1:30 PM",
+                        sustainability: "Save 2.0 KG waste today",
+                    },
+                    2: { // Tuesday
+                        directive: "Protein waste peaks mid-week. Scale back meat entrée preparation by 10% today. Prioritise vegetable sides and soup, which show stronger Tuesday demand.",
+                        category: "Meat (Proteins)",
+                        peak: "12:15 PM – 1:15 PM",
+                        sustainability: "Save 1.8 KG waste today",
+                    },
+                    3: { // Wednesday
+                        directive: "Mid-week hump: attendance is typically peak. Maintain full preparation volumes but use staggered 45-min cooking cycles to reduce end-of-service surplus.",
+                        category: "Grains (Rice)",
+                        peak: "12:00 PM – 1:20 PM",
+                        sustainability: "Save 1.5 KG waste today",
+                    },
+                    4: { // Thursday
+                        directive: "Thursday dinners show elevated vegetable waste. Pre-check dinner prep sheets — trim Section D soup volume by 15%. Thursday breakfast is efficient; no adjustment needed.",
+                        category: "Vegetables (Dinner)",
+                        peak: "12:10 PM – 1:10 PM",
+                        sustainability: "Save 2.2 KG waste today",
+                    },
+                    5: { // Friday
+                        directive: "Friday lunch attendance drops 18% due to early student departures. Reduce rice and grain cooking sheets by 20% before service. Scale down Section A prep first.",
+                        category: "Grains (Rice)",
+                        peak: "11:45 AM – 12:45 PM",
+                        sustainability: "Save 3.4 KG waste today",
+                    },
+                    6: { // Saturday
+                        directive: "Saturday capacity is 40% of weekday levels — day scholars absent. Drastically reduce all preparation. Run a single-section service if possible to concentrate demand.",
+                        category: "Meat (Proteins)",
+                        peak: "1:00 PM – 2:00 PM",
+                        sustainability: "Save 4.2 KG waste today",
+                    },
+                };
+
+                const d = directives[now.getDay()];
+                const directiveEl = document.getElementById('brief-directive');
+                if (directiveEl && d) directiveEl.textContent = d.directive;
+
+                const catEl = document.getElementById('brief-top-category');
+                if (catEl && d) catEl.textContent = d.category;
+
+                const peakEl = document.getElementById('brief-peak-window');
+                if (peakEl && d) peakEl.textContent = d.peak;
+
+                const susEl = document.getElementById('brief-sustainability');
+                if (susEl && d) susEl.textContent = d.sustainability;
+            })();
+
+            // ---------------------------------------------------------
+            // RUSH HOUR INTELLIGENCE — Timeline Builder
+            // ---------------------------------------------------------
+            (function buildRushTimeline() {
+                const container = document.getElementById('rush-timeline');
+                if (!container) return;
+
+                // Slots: time, level (closed/low/medium/peak), label
+                const slots = [
+                    { time: '7:30 AM',  level: 'low',    label: 'Breakfast Open',     pct: 22 },
+                    { time: '8:15 AM',  level: 'medium', label: 'Morning Rush',        pct: 55 },
+                    { time: '9:00 AM',  level: 'low',    label: 'Post-Breakfast',      pct: 18 },
+                    { time: '10:00 AM', level: 'closed', label: 'Break',              pct:  5 },
+                    { time: '11:30 AM', level: 'low',    label: 'Lunch Opens',         pct: 28 },
+                    { time: '12:15 PM', level: 'peak',   label: 'Peak Lunch Rush',     pct:100 },
+                    { time: '1:10 PM',  level: 'medium', label: 'Lunch Tapering',      pct: 60 },
+                    { time: '2:00 PM',  level: 'low',    label: 'Late Lunch',          pct: 20 },
+                ];
+
+                const badgeLabel = { closed: 'Closed', low: 'Low', medium: 'Moderate', peak: 'Peak Rush' };
+
+                slots.forEach(slot => {
+                    const item = document.createElement('div');
+                    item.className = 'rush-item';
+                    item.innerHTML = `
+                        <div class="rush-time">${slot.time}</div>
+                        <div class="rush-bar-wrap">
+                            <div class="rush-bar bar-${slot.level}" data-pct="${slot.pct}" style="height:0px;"></div>
+                        </div>
+                        <div class="rush-meal-label">${slot.label}</div>
+                        <div class="rush-badge badge-${slot.level}">${badgeLabel[slot.level]}</div>
+                    `;
+                    container.appendChild(item);
+                });
+
+                // Animate bars on intersection
+                const rushObserver = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            container.querySelectorAll('.rush-bar').forEach((bar, i) => {
+                                const pct = parseInt(bar.dataset.pct);
+                                setTimeout(() => {
+                                    bar.style.height = `${(pct / 100) * 150}px`;
+                                }, i * 80);
+                            });
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.25 });
+                rushObserver.observe(container);
+            })();
+        });
+    </script>
+</body>
+</html>
